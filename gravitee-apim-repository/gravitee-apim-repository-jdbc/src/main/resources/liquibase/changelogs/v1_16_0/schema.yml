@@ -1,8 +1,0 @@
-databaseChangeLog:
-    - changeSet:
-        id: 1.16.0
-        author: GraviteeSource Team
-        changes:
-        - dropTable:
-            cascadeConstraints: true
-            tableName: ${gravitee_prefix}group_administrators

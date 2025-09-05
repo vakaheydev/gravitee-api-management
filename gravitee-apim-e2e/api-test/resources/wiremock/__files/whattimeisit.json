@@ -1,4 +1,0 @@
-{
-  "timestamp": "{{now format='unix'}}",
-  "date": "{{now}}"
-}

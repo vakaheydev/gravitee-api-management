@@ -1,3 +1,0 @@
-title: New user creation!
-message: |
-  "User ${user.firstname} ${user.lastname}" has been created.

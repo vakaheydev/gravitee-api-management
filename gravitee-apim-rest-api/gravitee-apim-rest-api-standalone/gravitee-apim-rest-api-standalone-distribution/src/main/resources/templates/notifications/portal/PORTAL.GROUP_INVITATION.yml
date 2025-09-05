@@ -1,3 +1,0 @@
-title: Group invitation
-message: |
-    "${user.displayName}" has been invited in group "${group.name}".

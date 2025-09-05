@@ -1,7 +1,0 @@
-{
-    "name": "empty-pages",
-    "definition_context": {
-      "origin": "kubernetes"
-    },
-    "pages": []
-}

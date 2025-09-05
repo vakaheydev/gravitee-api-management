@@ -1,9 +1,0 @@
-@use 'sass:map';
-@use '@angular/material' as mat;
-@use '@gravitee/ui-particles-angular' as gio;
-
-.actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}

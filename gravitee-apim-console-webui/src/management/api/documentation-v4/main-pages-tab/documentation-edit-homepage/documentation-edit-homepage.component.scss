@@ -1,5 +1,0 @@
-@use 'src/scss/gio-layout' as gio-layout;
-
-:host {
-  @include gio-layout.gio-responsive-content-container;
-}

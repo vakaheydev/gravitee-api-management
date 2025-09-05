@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: 4.4.0_federated_apikeys
-      author: GraviteeSource Team
-      changes:
-        - addColumn:
-            tableName: ${gravitee_prefix}keys
-            columns:
-              - column: {name: federated, type: boolean, constraints: { nullable: true }, defaultValue: false }
