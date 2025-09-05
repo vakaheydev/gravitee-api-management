@@ -16,6 +16,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Constants } from '../entities/Constants';
 import { PagedResult } from '../entities/pagedResult';
@@ -53,6 +54,18 @@ export class ApplicationService {
     if (_query && _query.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
       query = undefined;
       applicationIds = [_query];
+    }
+
+    if (query && query.includes('azp')) {
+      return this.list().pipe(
+        map(result => {
+          const azp = query.split(' ')[1];
+          const filteredData = result.data.filter(app => app.settings?.app?.client_id === azp);
+          const pr = new PagedResult<Application>();
+          pr.populate({ data: filteredData, metadata: result.metadata, page: result.page });
+          return pr;
+        })
+      )
     }
 
     return this.http.get<PagedResult<Application>>(`${this.constants.env.baseURL}/applications/_paged`, {
