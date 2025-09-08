@@ -112,8 +112,8 @@ services:
     depends_on:
       - mongodb
       - elasticsearch
-    volumes:
-      - ./.logs/apim-management-api:/opt/graviteeio-management-api/logs
+#    volumes:
+#      - ./.logs/apim-management-api:/opt/graviteeio-management-api/logs
     environment:
       - gravitee_management_mongodb_uri=mongodb://mongodb:27017/gravitee?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
       - gravitee_analytics_elasticsearch_endpoints_0=http://elasticsearch:9200
@@ -122,7 +122,8 @@ services:
       - frontend
 
   management_ui:
-    image: ${APIM_REGISTRY:-graviteeio}/apim-management-ui:${APIM_VERSION:-latest}
+#    image: ${APIM_REGISTRY:-graviteeio}/apim-management-ui:${APIM_VERSION:-latest}
+    image: my-grvt-console-webui
     container_name: gio_apim_management_ui
     restart: always
     ports:
