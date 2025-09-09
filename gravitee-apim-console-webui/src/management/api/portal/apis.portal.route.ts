@@ -213,6 +213,7 @@ function apisPortalRouterConfig($stateProvider) {
       url: '/:subscriptionId?:page&:size&:application&:status&:plan&:api_key',
       component: 'apiSubscription',
       resolve: {
+        currentUser: (UserService: UserService) => UserService.current(),
         subscription: ($stateParams, ApiService: ApiService) =>
           ApiService.getSubscription($stateParams.apiId, $stateParams.subscriptionId).then((response) => response.data),
       },

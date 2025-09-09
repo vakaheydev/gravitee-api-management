@@ -132,6 +132,14 @@ services:
       - management_api
     environment:
       - MGMT_API_URL=http://localhost:8083/management/organizations/DEFAULT/environments/DEFAULT/
+      - gravitee_security_providers_0_type=memory
+      - gravitee_security_providers_0_users_0_username=test
+      - gravitee_security_providers_0_users_0_password=test
+      - gravitee_security_providers_0_users_0_firstname=Local
+      - gravitee_security_providers_0_users_0_lastname=Test
+      - gravitee_security_providers_0_users_0_email=test@example.com
+      - gravitee_security_providers_0_users_0_roles_0=ORGANIZATION:ADMIN
+      - gravitee_security_providers_0_users_0_roles_1=ENVIRONMENT:ADMIN
     volumes:
       - ./.logs/apim-management-ui:/var/log/nginx
     networks:

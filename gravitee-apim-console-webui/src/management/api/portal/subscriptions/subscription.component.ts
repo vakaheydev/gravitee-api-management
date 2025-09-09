@@ -19,12 +19,14 @@ import * as _ from 'lodash';
 import { ApiService } from '../../../../services/api.service';
 import NotificationService from '../../../../services/notification.service';
 import { PlanSecurityType } from '../../../../entities/plan/plan';
+import { User } from '../../../../entities/user';
 import { ApiKeyMode } from '../../../../entities/application/application';
 
 const ApiSubscriptionComponent: ng.IComponentOptions = {
   bindings: {
     api: '<',
     subscription: '<',
+    currentUser: "<",
   },
   template: require('./subscription.html'),
   controller: class {
@@ -63,7 +65,7 @@ const ApiSubscriptionComponent: ng.IComponentOptions = {
     }
 
     listApiKeys() {
-      if (this.subscription.plan.security === PlanSecurityType.API_KEY) {
+      if (this.subscription.plan.security === PlanSecurityType.API_KEY && this.currentUser?.userApiPermissions?.includes("api-subscription-c")) {
         // Retrieve api_keys for current current subscription
         this.ApiService.listApiKeys(this.api.id, this.subscription.id).then((response) => {
           this.keys = response.data;
