@@ -95,7 +95,7 @@ public class ApiSubscriptionApiKeysResource extends AbstractApiKeyResource {
         )
     )
     @ApiResponse(responseCode = "500", description = "Internal server error")
-    @Permissions({ @Permission(value = RolePermission.API_SUBSCRIPTION, acls = RolePermissionAction.READ) })
+    @Permissions({ @Permission(value = RolePermission.API_SUBSCRIPTION, acls = RolePermissionAction.CREATE) })
     public List<ApiKeyEntity> getApiKeysForApiSubscription() {
         return apiKeyService.findBySubscription(GraviteeContext.getExecutionContext(), subscription);
     }
