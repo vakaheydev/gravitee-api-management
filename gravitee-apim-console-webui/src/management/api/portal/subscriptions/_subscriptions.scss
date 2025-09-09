@@ -1,9 +1,19 @@
 .autocomplete-create-subscription li {
   border-bottom: 1px solid #ccc;
   height: auto;
+  min-height: 48px;
   padding-top: 8px;
   padding-bottom: 8px;
   white-space: normal;
+}
+
+.autocomplete-create-subscription md-virtual-repeat-container li {
+  height: auto !important;
+  min-height: 48px;
+  white-space: normal;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start;
 }
 .autocomplete-create-subscription li:last-child {
   border-bottom-width: 0;
@@ -11,7 +21,7 @@
 .autocomplete-create-subscription .item-title,
 .autocomplete-create-subscription .item-metadata {
   display: block;
-  line-height: 2;
+  line-height: 1.3;
 }
 
 .autocomplete-create-subscription .item-metadata {
