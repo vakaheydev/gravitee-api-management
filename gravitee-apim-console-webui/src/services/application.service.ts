@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-import { IHttpResponse } from 'angular';
-import * as _ from 'lodash';
+import {
+  IHttpResponse
+} from 'angular';
+import * as _
+  from 'lodash';
 
-import { PagedResult } from '../entities/pagedResult';
-import { ApiKeyMode } from '../entities/application/application';
+import {
+  PagedResult
+} from '../entities/pagedResult';
+import {
+  ApiKeyMode
+} from '../entities/application/application';
+import { ApplicationCacheService } from '../services/applicationCacheService.service';
+
 
 export class LogsQuery {
   from: number;
@@ -36,10 +45,12 @@ interface IMembership {
   role: string;
 }
 
-export type ApplicationExcludeFilter = 'owner' | 'picture';
+export type ApplicationExcludeFilter =
+  'owner'
+  | 'picture';
 
 class ApplicationService {
-  constructor(private $http: ng.IHttpService, private Constants) {
+  constructor(private $http: ng.IHttpService, private $q: ng.IQService, private ApplicationCacheService: ApplicationCacheService, private Constants) {
     'ngInject';
   }
 
@@ -73,7 +84,7 @@ class ApplicationService {
 
   listByIdIn(ids: string[] = [], status = 'active'): ng.IPromise<any> {
     if (ids.length === 0) {
-      return Promise.resolve({ data: [] });
+      return Promise.resolve({data: []});
     }
     return this.list(null, null, status, ids);
   }
@@ -100,6 +111,41 @@ class ApplicationService {
     return this.listPage(['picture'], query, page, size);
   }
 
+  private listOrCache(): ng.IPromise<any> {
+    if (this.ApplicationCacheService.isCacheValid()) {
+      return this.$q.when(this.ApplicationCacheService.getCache());
+    } else {
+      return this.list().then(res => {
+          this.ApplicationCacheService.setCache(res.data);
+          return res.data;
+        }
+      )
+    }
+  }
+
+  private findByAzp(azp: string): ng.IHttpPromise<any> {
+    return this.listOrCache().then(result => {
+      const filtered = result.filter(app => app.settings?.app?.client_id?.startsWith(azp));
+
+      return {
+        data: {
+          data: filtered,
+          page: {
+            current: 0,
+            per_page: 20,
+            size: 1,
+            total_elements: 1,
+            total_pages: 1
+          },
+        },
+        status: 200,
+        headers: () => ({}),
+        config: {},
+        statusText: 'OK'
+      } as ng.IHttpResponse<any>;
+    });
+  }
+
   listPage(
     exclude: ApplicationExcludeFilter[] = [],
     query = '',
@@ -109,6 +155,15 @@ class ApplicationService {
     status = 'active',
   ): ng.IHttpPromise<any> {
     let url = `${this.Constants.env.baseURL}/applications/_paged?status=${status}`;
+
+    if (query && query.includes('azp')) {
+      const azp = query.split(' ')[1];
+      return this.findByAzp(azp);
+    }
+
+    if (query && query.match(/^[0-9]*$/)) {
+      return this.findByAzp(query);
+    }
 
     if (query.trim() !== '') {
       url += `&query=${query}`;
@@ -166,8 +221,8 @@ class ApplicationService {
    */
   subscribe(applicationId: string, planId: string, request?: string, apiKeyMode?: ApiKeyMode): ng.IHttpPromise<any> {
     const data = {
-      ...(request ? { request } : ''),
-      ...(apiKeyMode ? { apiKeyMode } : ''),
+      ...(request ? {request} : ''),
+      ...(apiKeyMode ? {apiKeyMode} : ''),
     };
     return this.$http.post(this.subscriptionsURL(applicationId) + '?plan=' + planId, data);
   }
@@ -231,13 +286,13 @@ class ApplicationService {
       }
     });
 
-    return this.$http.get(url, { timeout: this.getAnalyticsHttpTimeout() });
+    return this.$http.get(url, {timeout: this.getAnalyticsHttpTimeout()});
   }
 
   findLogs(application: string, query: LogsQuery): ng.IPromise<any> {
     return this.$http.get(
       this.buildURLWithQuery(this.cloneQuery(query), `${this.Constants.env.baseURL}/applications/` + application + '/logs?'),
-      { timeout: 30000 },
+      {timeout: 30000},
     );
   }
 
@@ -247,7 +302,7 @@ class ApplicationService {
     logsQuery.size = 10000;
     return this.$http.get(
       this.buildURLWithQuery(logsQuery, `${this.Constants.env.baseURL}/applications/` + application + '/logs/export?'),
-      { timeout: 30000 },
+      {timeout: 30000},
     );
   }
 

@@ -95,6 +95,7 @@ import ApiSubscriptionsComponent from '../management/api/portal/subscriptions/su
 import ApiSubscriptionComponent from '../management/api/portal/subscriptions/subscription.component';
 // Applications
 import ApplicationService from '../services/application.service';
+import { ApplicationCacheService } from '../services/applicationCacheService.service';
 import ApplicationTypesService from '../services/applicationTypes.service';
 
 import ApplicationCreationComponent from './application/creation/steps/application-creation.component';
@@ -768,6 +769,7 @@ graviteeManagementModule.controller('SelectPageDialogController', SelectPageDial
 graviteeManagementModule.controller('DialogReviewController', DialogReviewController);
 graviteeManagementModule.controller('DialogRequestForChangesController', DialogRequestForChangesController);
 graviteeManagementModule.service('ApplicationService', ApplicationService);
+graviteeManagementModule.service('ApplicationCacheService', ApplicationCacheService);
 graviteeManagementModule.service('ApplicationTypesService', ApplicationTypesService);
 graviteeManagementModule.service('ApiService', ApiService);
 graviteeManagementModule.service('debugApiService', DebugApiService);

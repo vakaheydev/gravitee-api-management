@@ -15,17 +15,20 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { Constants } from '../entities/Constants';
 import { PagedResult } from '../entities/pagedResult';
 import { Application } from '../entities/application/application';
 
+import { ApplicationCacheService } from '../services/applicationCacheService.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ApplicationService {
-  constructor(private readonly http: HttpClient, @Inject('Constants') private readonly constants: Constants) {}
+  constructor(private readonly http: HttpClient, private readonly ApplicationCacheService: ApplicationCacheService, @Inject('Constants') private readonly constants: Constants) {}
 
   getAll(
     params: {
@@ -46,6 +49,36 @@ export class ApplicationService {
     });
   }
 
+  private listOrCache(): Observable<PagedResult<Application>> {
+    if (this.ApplicationCacheService.isCacheValid()) {
+      const pr = new PagedResult();
+      pr.populate({
+        data: this.ApplicationCacheService.getCache(),
+        metadata: {},
+        page: 1
+      })
+
+      return of(pr);
+    } else {
+      return this.list().pipe(
+        tap(x => {
+          this.ApplicationCacheService.setCache(x.data);
+        })
+      )
+    }
+  }
+
+  private findByAzp(azp: string): Observable<PagedResult<Application>> {
+    return this.listOrCache().pipe(
+      map(result => {
+        const filteredData = result.data.filter(app => app.settings?.app?.client_id?.startsWith(azp));
+        const pr = new PagedResult<Application>();
+        pr.populate({ data: filteredData, metadata: result.metadata, page: result.page });
+        return pr;
+      })
+    )
+  }
+
   list(status?: string, _query?: string, order?: string, page = 1, size = 10): Observable<PagedResult<Application>> {
     let query = _query;
     let applicationIds = undefined;
@@ -53,6 +86,15 @@ export class ApplicationService {
     if (_query && _query.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
       query = undefined;
       applicationIds = [_query];
+    }
+
+    if (query && query.includes('azp')) {
+      const azp = query.split(' ')[1];
+      return this.findByAzp(azp);
+    }
+
+    if (query && query.match(/^[0-9]*$/)) {
+      return this.findByAzp(query);
     }
 
     return this.http.get<PagedResult<Application>>(`${this.constants.env.baseURL}/applications/_paged`, {
