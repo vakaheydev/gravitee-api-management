@@ -35,8 +35,9 @@
         style="width: 400px"
       >
         <md-item-template>
-          <span class="item-title"> <span> {{app.name}} </span><span ng-if="app.type">({{app.type}}) </span> </span>
-          <span class="item-metadata"> By {{app.owner.displayName}} on {{app.created_at | humanDateFilter}} </span>
+          <span class="item-title"> {{app.name}} </span>
+          <span class="item-metadata" ng-if="app.settings.app.client_id"> AZP: {{app.settings.app.client_id}} </span>
+          <span class="item-metadata" ng-if="app.settings.app.type"> Type: {{app.settings.app.type}} </span>
         </md-item-template>
         <md-not-found> No application matching "{{searchText}}" were found. </md-not-found>
       </md-autocomplete>
@@ -53,9 +54,11 @@
             <md-radio-button
               ng-value="plan"
               ng-disabled="dialogSubscriptionCreateController.planAlreadyHaveSubscriptions(plan.id) || dialogSubscriptionCreateController.hasGeneralConditions(plan)"
+              style="display: flex; flex-direction: column; align-items: flex-start;"
             >
-              {{plan.name}}
-              <md-tooltip md-direction="right"> {{plan.description}} </md-tooltip>
+              <div>{{plan.name}}</div>
+              <div style="color: rgba(0, 0, 0, 0.54); font-size: smaller;">{{plan.description}}</div>
+
               <div
                 ng-if="dialogSubscriptionCreateController.planAlreadyHaveSubscriptions(plan.id)"
                 style="color: rgba(0, 0, 0, 0.54); font-size: smaller"

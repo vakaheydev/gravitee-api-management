@@ -67,7 +67,7 @@ function managementRouterConfig($stateProvider) {
       resolve: {
         apis: (ApiService: ApiService, Constants, $state: StateParams) => {
           if (Constants.env.settings.dashboards.apiStatus.enabled) {
-            return ApiService.list().then((response) => response.data);
+            return ApiService.list(undefined, undefined, undefined, undefined, undefined, undefined, undefined, 20000).then((response) => response.data);
           }
           return $state.go('management.dashboard.home');
         },

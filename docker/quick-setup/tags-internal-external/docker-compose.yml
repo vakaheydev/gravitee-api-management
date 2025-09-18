@@ -125,7 +125,8 @@ services:
       - frontend
 
   management_ui:
-    image: ${APIM_REGISTRY:-graviteeio}/apim-management-ui:${APIM_VERSION:-latest}
+#    image: ${APIM_REGISTRY:-graviteeio}/apim-management-ui:${APIM_VERSION:-latest}
+    image: my-grvt-console-webui:3.20.32
     container_name: gio_apim_management_ui
     restart: always
     ports:
